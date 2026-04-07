@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: 'Noto Serif KR', serif;
+  --font-sans: 'Noto Sans KR', sans-serif;
+
+  /* ── Deep Forest 테마 ── */
+  --color-brand: #1A3320;
+  --color-brand-dark: #0F2016;
+  --color-brand-mid: #2A4E30;
+  --color-accent: #E8D44D;
+  --color-accent-muted: #8A7A00;
+
+  --color-bg-base: #F8FAF2;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-tint: #F5F8D0;
+
+  --color-border: #D8E8A0;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible {
+  outline: 2px solid #1A3320;
+  outline-offset: 2px;
+}
