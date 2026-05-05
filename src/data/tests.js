@@ -2,15 +2,7 @@
 // reverse: true  → 긍정 문항 (그렇다 = 좋은 상태) → 점수 반전 (MAX - raw)
 // 최종: 높은 점수 = 증상 심함 = pct 높음 = 심각한 수준
 
-const optionsMHS = [
-  { label: '결코 그렇지 않다', score: 0 },
-  { label: '드물게 그렇다', score: 1.25 },
-  { label: '때때로 그렇다', score: 2.5 },
-  { label: '자주 그렇다', score: 3.75 },
-  { label: '항상 그렇다', score: 5 },
-];
-
-const optionsPeer = [
+const options5_1 = [
   { label: '전혀 그렇지 않다', score: 0 },
   { label: '그렇지 않다', score: 1.25 },
   { label: '보통이다', score: 2.5 },
@@ -18,7 +10,22 @@ const optionsPeer = [
   { label: '매우 그렇다', score: 5 },
 ];
 
-const options4 = [
+const options5_2 = [
+  { label: '결코 그렇지 않다', score: 0 },
+  { label: '드물게 그렇다', score: 1.25 },
+  { label: '때때로 그렇다', score: 2.5 },
+  { label: '자주 그렇다', score: 3.75 },
+  { label: '항상 그렇다', score: 5 },
+];
+
+const options4_1 = [
+  { label: '전혀 그렇지 않다', score: 0 },
+  { label: '그렇지 않다', score: 1.67 },
+  { label: '그렇다', score: 3.33 },
+  { label: '매우 그렇다', score: 5 },
+];
+
+const options4_2 = [
   { label: '극히 드물게(1일 이하)', score: 0 },
   { label: '가끔(1일~2일)', score: 1.67 },
   { label: '자주(3일~4일)', score: 3.33 },
@@ -35,7 +42,7 @@ export const tests = [
     duration: '약 3분',
     shortDesc: '지난 2주간의 불안 증상을 평가하는 한국형 불안평가도구입니다.',
     desc: '본 검사는 한국형 불안평가도구(MHS: AR)입니다. 불안 진단기준을 근거하여 지난 2주간 경험한 불안 증상을 평가하여, 현재 나의 불안 수준을 확인하는 검사입니다.\n\n각 문항에 대해 느끼시는 대로 솔직하게 응답해 주시면 됩니다. 문항에는 정답이 있는 것이 아니므로 지난 2주간 자신이 경험했던 정도를 있는 그대로 응답하시면 됩니다.',
-    options: optionsMHS,
+    options: options5_2,
     groups: [
       { label: '인지적 불안', indices: [0, 1] },
       { label: '신체 증상', indices: [6, 7, 9] },
@@ -66,7 +73,7 @@ export const tests = [
     duration: '약 5분',
     shortDesc: '지난 1주일간의 우울 증상 빈도를 측정하는 역학 연구용 우울 척도입니다.',
     desc: '본 검사는 한국어판 CES-D 척도입니다. 후기 청소년 및 일반인을 대상으로 우울감 정도를 알아보기 위해 만들어졌습니다.\n\n이 검사는 우울감 정도를 알아보는 검사이며, 정밀한 심리검사를 대신할 수 없습니다. 보다 정확한 우울장애 선별과 진단을 위해서는 전문적인 판단이 필요하오니 본 검사의 결과는 자신을 이해하는 정도로 활용해 주세요.\n\n지난 1주간 자신이 경험했던 정도를 있는 그대로 솔직하게 응답해 주시면 됩니다.',
-    options: options4,
+    options: options4_2,
     groups: [
       { label: '우울 정서', indices: [2, 5, 8, 13, 16, 17] },
       { label: '긍정 정서', indices: [3, 6, 7, 11, 15] },
@@ -105,7 +112,7 @@ export const tests = [
     duration: '약 10분',
     shortDesc: '대인관계 문제의 원인이 자신의 성격적 요인과 타인 요인 중 어느 정도인지 확인합니다.',
     desc: '대인관계 문제 원인 검사는 여러분이 현재 겪는 대인관계 문제의 원인이 무엇인지 알아볼 수 있는 검사로, 자신의 성격적 요인과 타인 요인이 어느 정도인지 확인할 수 있습니다.\n\n각 문항을 읽고 자신의 상태에 가장 가까운 응답을 체크해 주세요.',
-    options: optionsPeer,
+    options: options5_1,
     groups: [
       { label: '자기인식', indices: [0, 2, 8, 13, 26, 27, 31, 34] },
       { label: '또래관계', indices: [1, 4, 5, 6, 10, 11, 12, 17, 18, 19, 20, 22, 23, 24, 25, 28, 29, 30, 32, 33] },
@@ -161,7 +168,7 @@ export const tests = [
     duration: '약 7분',
     shortDesc: '정서 조절, 충동성, 자기 인식 등 정서·행동 패턴을 종합적으로 분석합니다.',
     desc: '정서·행동 특성 검사는 아동·청소년의 정서 조절 능력, 행동 패턴, 충동성, 자기 인식 등을 종합적으로 평가합니다. 잠재적인 어려움을 조기에 발견하는 동시에 개인의 강점과 회복 탄력성을 파악하는 데 도움을 줍니다.\n\n평소 자신의 모습을 솔직하게 생각하며 응답해 주세요.',
-    options: optionsPeer,
+    options: options5_1,
     groups: [
       { label: '정서 조절', indices: [0, 1, 2, 13, 16, 19, 22] },
       { label: '대인관계', indices: [4, 9, 10, 14, 20, 24] },
@@ -205,7 +212,7 @@ export const tests = [
     duration: '약 5분',
     shortDesc: '학업, 가족, 친구 등 일상에서 경험하는 스트레스 수준을 평가합니다.',
     desc: '본 검사는 청소년이 일상에서 경험하는 스트레스 수준을 학업, 가족, 친구 영역에서 평가하는 검사입니다.\n\n편안한 마음으로 문항에 성실하게 응답해주세요. 정답이 있는 것이 아니므로 자신의 생각이나 상태를 있는 그대로 체크하면 됩니다.\n\n※ 이 검사는 자신의 스트레스 수준을 간단히 알아보도록 제공되고 있습니다. 신뢰도와 타당도가 충분히 확보되지 않았으므로, 검사결과에 지나치게 의미를 두거나 확대해석하지 마세요. 검사 결과는 자신을 이해하는 데 도움을 주는 정도로만 활용하는 것이 좋습니다. 보다 정확한 심리상태를 확인하고자 한다면 가까운 청소년상담복지센터 등 전문기관에서 정밀한 심리검사를 받아보는 것을 추천합니다.',
-    options: optionsPeer,
+    options: options5_1,
     groups: [
       { label: '학업 스트레스', indices: [0, 1, 2, 3, 4, 5] },
       { label: '가족 스트레스', indices: [6, 7, 8, 9] },
