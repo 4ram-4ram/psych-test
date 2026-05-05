@@ -75,7 +75,8 @@ function drawRadar(canvas, groupScores, groupLabels) {
 
   // 레이블
   const LABEL_PAD = 20;
-  ctx.font = `500 ${Math.round(W * 0.035)}px 'Noto Sans KR', sans-serif`;
+  const fontSize = Math.round(W * 0.035);
+  ctx.font = `500 ${fontSize}px 'Noto Sans KR', sans-serif`;
   ctx.fillStyle = '#1A3320';
   ctx.textBaseline = 'middle';
   for (let i = 0; i < n; i++) {
