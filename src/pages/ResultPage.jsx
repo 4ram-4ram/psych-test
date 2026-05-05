@@ -84,8 +84,31 @@ function drawRadar(canvas, groupScores, groupLabels) {
     ctx.textAlign =
       Math.abs(Math.cos(angle(i))) < 0.1 ? 'center'
         : Math.cos(angle(i)) > 0 ? 'left' : 'right';
-    ctx.fillText(groupLabels[i], x, y);
+
+    // 자동 줄바꿈 (ctx 인자 제거, 글자 수 기준)
+    const lines = wrapLabel(groupLabels[i], 5);
+    const lineHeight = fontSize * 1.25;
+
+    lines.forEach((line, li) => {
+      const yOffset = (li - (lines.length - 1) / 2) * lineHeight;
+      ctx.fillText(line, x, y + yOffset);
+    });
   }
+}
+
+// ── 라벨 자동 줄바꿈 (공백 기준, 글자 수 기반) ─────────────────
+function wrapLabel(text, maxChars = 5) {
+  // 글자 수가 maxChars 이하면 그대로
+  if (text.length <= maxChars) return [text];
+
+  const words = text.split(' ');
+  if (words.length === 1) return [text]; // 공백 없으면 그대로
+
+  // 절반 지점에서 분할
+  const mid = Math.ceil(words.length / 2);
+  const line1 = words.slice(0, mid).join(' ');
+  const line2 = words.slice(mid).join(' ');
+  return [line1, line2];
 }
 
 // ── 역채점 적용 점수 계산 ─────────────────────────────────────
