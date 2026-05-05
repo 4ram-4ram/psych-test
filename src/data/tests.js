@@ -18,6 +18,14 @@ const options5_2 = [
   { label: '항상 그렇다', score: 5 },
 ];
 
+const options5_3 = [
+  { label: '전혀 없음', score: 0 },
+  { label: '1~2번', score: 1.25 },
+  { label: '한 달에 1~2번', score: 2.5 },
+  { label: '일주일에 1~2번', score: 3.75 },
+  { label: '일주일에 여러 번', score: 5 },
+];
+
 const options4_1 = [
   { label: '전혀 그렇지 않다', score: 0 },
   { label: '그렇지 않다', score: 1.67 },
@@ -268,6 +276,42 @@ export const tests = [
       { text: '스마트폰 사용이 지금 하고 있는 공부에 방해가 되지 않는다.', reverse: true },
       { text: '스마트폰을 사용할 수 없을 때 패닉상태에 빠진다.', reverse: false },
       { text: '스마트폰 사용에 많은 시간을 보내는 것이 습관화되었다.', reverse: false },
+    ],
+  },
+
+  // ── 학교폭력 피해 척도 검사 ──────────────────────────────────
+  {
+    id: 'violence',
+    name: '학교폭력 피해 척도 검사',
+    icon: '🛡️',
+    duration: '약 5분',
+    shortDesc: '지난 학기 동안 경험한 학교폭력 피해를 8개 유형별로 점검합니다.',
+    desc: '본 검사는 교육부·한국교육개발원(KEDI)의 「학교폭력 실태조사」 문항을 참고하여 구성된 학교폭력 피해 척도 검사입니다. 「학교폭력예방 및 대책에 관한 법률」 제11조에 근거하며, 초등학교 4학년부터 고등학교 3학년 청소년을 대상으로 합니다.\n\n언어폭력, 집단 따돌림, 신체폭력, 금품갈취·강요, 스토킹, 성폭력, 사이버폭력 등 학교폭력 피해 경험을 점검합니다.\n\n지난 학기 동안 자신이 경험한 정도를 있는 그대로 솔직하게 응답해 주세요. 응답 내용은 자신의 상태를 이해하고 필요한 도움을 받기 위한 자료로 활용됩니다.\n\n※ 도움이 필요한 경우 학교폭력 신고센터(117), 청소년상담복지센터(1388), Wee 센터에 언제든 연락할 수 있습니다.',
+    options: options5_3,
+    groups: [
+      { label: '언어폭력', indices: [0, 1, 2, 3] },
+      { label: '집단 따돌림', indices: [4, 5] },
+      { label: '신체폭력', indices: [6, 7] },
+      { label: '금품갈취, 강요', indices: [8, 9] },
+      { label: '스토킹, 성폭력', indices: [10, 11] },
+      { label: '사이버폭력', indices: [12, 13] },
+    ],
+    questions: [
+      // 전 문항 부정 (그렇다 = 피해 경험)
+      { text: '친구가 나를 심하게 놀리거나 조롱해서 기분이 나빴다.', reverse: false },
+      { text: '친구가 나에게 욕설이나 모욕적인 말을 했다.', reverse: false },
+      { text: '친구가 나를 협박하는 말을 했다.', reverse: false },
+      { text: '친구가 나의 외모, 가족, 성격 등에 대해 험담을 했다.', reverse: false },
+      { text: '친구가 나를 의도적으로 따돌리거나 무시했다.', reverse: false },
+      { text: '친구가 나에 대한 헛소문을 퍼뜨렸다.', reverse: false },
+      { text: '친구가 나를 밀치거나 발로 차거나 때렸다.', reverse: false },
+      { text: '친구가 나의 물건을 일부러 망가뜨리거나 빼앗았다.', reverse: false },
+      { text: '친구가 나에게 돈이나 물건을 강제로 요구했다.', reverse: false },
+      { text: '친구가 내가 원하지 않는 일(심부름, 숙제 등)을 강제로 시켰다.', reverse: false },
+      { text: '친구가 나를 계속 따라다니거나 지켜봐서 불안했다.', reverse: false },
+      { text: '친구가 나에게 신체 접촉이나 성적인 말로 불쾌감을 줬다.', reverse: false },
+      { text: '친구가 SNS·메신저·게임에서 나에게 욕설이나 위협적인 말을 했다.', reverse: false },
+      { text: '친구가 나의 사진이나 개인정보를 동의 없이 인터넷에 올렸다.', reverse: false },
     ],
   },
 ];
