@@ -154,15 +154,6 @@ export default function ResultDetailModal({ test, answers, createdAt, onClose })
                     </span>
                     <p className="text-xs leading-relaxed flex-1" style={{ color: '#1A3320' }}>
                       {q.text}
-                      {q.reverse && (
-                        <span
-                          className="ml-1.5 text-[0.6rem] font-bold px-1.5 py-0.5 rounded"
-                          style={{ background: '#FEF3C7', color: '#92400E' }}
-                          title="역채점 문항"
-                        >
-                          역
-                        </span>
-                      )}
                     </p>
                   </div>
                   <p

@@ -105,14 +105,9 @@ export default function AdminPage() {
       <main className="flex-1 w-full px-4 md:px-0 max-w-3xl mx-auto py-6 md:py-10">
         {/* 상단 헤더 */}
         <div className="flex items-center justify-between mb-5">
-          <div>
-            <p className="text-[0.68rem] font-bold tracking-[0.14em] mb-1" style={{ color: '#8A7A00' }}>
-              ADMIN
-            </p>
-            <h1 className="font-serif text-2xl font-bold tracking-tight" style={{ color: '#1A3320' }}>
-              검사 결과 통계
-            </h1>
-          </div>
+          <h1 className="font-serif text-2xl font-bold tracking-tight" style={{ color: '#1A3320' }}>
+            검사 결과 통계
+          </h1>
           <button
             onClick={handleLogout}
             className="text-xs font-semibold px-3 py-2 rounded-lg border transition-colors"
@@ -135,8 +130,15 @@ export default function AdminPage() {
               <select
                 value={selectedTestId}
                 onChange={e => setSelectedTestId(e.target.value)}
-                className="px-3 py-2 rounded-lg border outline-none text-sm"
-                style={{ borderColor: '#D8E8A0', background: '#F8FAF2' }}
+                className="appearance-none pl-3 pr-9 py-2 rounded-lg border outline-none text-sm"
+                style={{
+                  borderColor: '#D8E8A0',
+                  backgroundColor: '#F8FAF2',
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%231A3320' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3E%3C/svg%3E")`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 0.75rem center',
+                  backgroundSize: '0.75rem',
+                }}
               >
                 <option value="">전체</option>
                 {tests.map(t => (
