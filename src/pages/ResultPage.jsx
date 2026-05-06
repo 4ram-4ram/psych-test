@@ -43,11 +43,15 @@ export default function ResultPage() {
     drawRadar(canvas, groupScores, groupLabels);
   }, [ready]);
 
-  // ── 결과 저장 (마운트 시 1회, 새로고침 중복 방지) ──────────────
+  // ── 결과 저장 (마운트 시 1회, 새로고침/StrictMode 중복 방지) ──
   useEffect(() => {
     if (!test || !rawAnswers.length) return;
     const guardKey = `saved_${id}`;
     if (sessionStorage.getItem(guardKey)) return;
+
+    // StrictMode 의 이중 실행 + 비동기 insert race 를 막기 위해
+    // 가드를 insert 시작 직전 동기로 설정. 실패 시 제거해 재시도 허용.
+    sessionStorage.setItem(guardKey, '1');
 
     supabase
       .from('test_results')
@@ -55,9 +59,8 @@ export default function ResultPage() {
       .then(({ error }) => {
         if (error) {
           console.error('[supabase] 결과 저장 실패:', error.message);
-          return;
+          sessionStorage.removeItem(guardKey);
         }
-        sessionStorage.setItem(guardKey, '1');
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

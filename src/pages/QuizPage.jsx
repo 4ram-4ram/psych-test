@@ -51,6 +51,8 @@ export default function QuizPage() {
     } else {
       sessionStorage.setItem('answers', JSON.stringify(answers));
       sessionStorage.setItem('testId', id);
+      // 재검사 시에도 새로 저장되도록 이전 시도의 저장 가드 해제
+      sessionStorage.removeItem(`saved_${id}`);
       navigate(`/result/${id}`);
     }
   }
