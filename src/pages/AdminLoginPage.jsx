@@ -3,9 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import Header from '../components/Header';
 
+// 아이디 로그인용 고정 도메인 (Supabase 관리자 계정 이메일의 도메인과 동일해야 함)
+const ADMIN_EMAIL_DOMAIN = '4ram.site';
+
 export default function AdminLoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -23,10 +26,12 @@ export default function AdminLoginPage() {
     setSubmitting(true);
     setError('');
 
+    // 아이디에 고정 도메인을 붙여 Supabase Auth 이메일로 변환
+    const email = `${userId.trim()}@${ADMIN_EMAIL_DOMAIN}`;
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      setError(error.message || '로그인에 실패했습니다.');
+      setError('아이디 또는 비밀번호가 올바르지 않습니다.');
       setSubmitting(false);
       return;
     }
@@ -54,14 +59,14 @@ export default function AdminLoginPage() {
         >
           <label className="flex flex-col gap-1">
             <span className="text-[0.72rem] font-bold tracking-wide" style={{ color: '#1A3320' }}>
-              이메일
+              아이디
             </span>
             <input
-              type="email"
+              type="text"
               required
               autoComplete="username"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              value={userId}
+              onChange={e => setUserId(e.target.value)}
               className="px-3 py-2.5 rounded-lg border outline-none text-sm"
               style={{ borderColor: '#D8E8A0', background: '#F8FAF2' }}
             />
