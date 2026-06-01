@@ -124,6 +124,14 @@ export default function MainPage() {
         <p className="text-[0.72rem]" style={{ color: '#9CA3AF' }}>
           본 검사 결과는 참고 자료이며, 임상적 진단을 대체하지 않습니다.
         </p>
+        <button
+          onClick={() => navigate('/privacy')}
+          className="text-[0.72rem] underline underline-offset-2
+                     transition-opacity duration-150 hover:opacity-70"
+          style={{ color: '#6B7280' }}
+        >
+          개인정보 처리방침
+        </button>
       </footer>
     </div>
   );
