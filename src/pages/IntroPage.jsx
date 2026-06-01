@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import { tests } from '../data/tests';
 import Header from '../components/Header';
+import SourceAttribution from '../components/SourceAttribution';
 
 export default function IntroPage() {
   const { id } = useParams();
@@ -101,6 +102,9 @@ export default function IntroPage() {
           <p className="text-center text-[0.7rem] mt-4" style={{ color: '#9CA3AF' }}>
             본 검사 결과는 참고 자료이며, 임상적 진단을 대체하지 않습니다.
           </p>
+
+          {/* ── 검사 출처(공공누리) ── */}
+          <SourceAttribution source={test.source} />
 
         </div>
       </main>
