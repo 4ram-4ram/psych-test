@@ -4,6 +4,7 @@ import { tests } from '../data/tests';
 import { supabase } from '../lib/supabase';
 import { calcTotalPct } from '../lib/scoring';
 import { getLevel } from '../data/results';
+import { exportResultsToExcel } from '../lib/exportExcel';
 import Header from '../components/Header';
 import ResultDetailModal from '../components/ResultDetailModal';
 
@@ -179,6 +180,15 @@ export default function AdminPage() {
               {loading ? '불러오는 중...' : `총 ${rows.length}건`}
             </p>
             <div className="flex gap-2">
+              <button
+                onClick={() => exportResultsToExcel(rows, selectedTestId).catch(err => console.error('[export]', err))}
+                disabled={loading || rows.length === 0}
+                className="text-xs font-semibold px-3 py-1.5 rounded-lg border
+                           disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ borderColor: '#1A3320', color: '#1A3320', background: '#FFFFFF' }}
+              >
+                ⬇ 엑셀 다운로드
+              </button>
               <button
                 onClick={() => { setSelectedTestId(''); setStartTime(''); setEndTime(''); }}
                 className="text-xs font-semibold px-3 py-1.5 rounded-lg border"
