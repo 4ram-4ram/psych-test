@@ -40,9 +40,13 @@ export default function AdminPage() {
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
 
-  // 데이터
-  const [rows, setRows] = useState([]);
+  // 데이터 / 페이지네이션
+  const PAGE_SIZE = 50;
+  const [rows, setRows] = useState([]);     // 현재 페이지(최대 50개)
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);    // 필터된 전체 건수
   const [loading, setLoading] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [errMsg, setErrMsg] = useState('');
 
   // 모달
@@ -55,36 +59,84 @@ export default function AdminPage() {
     return m;
   }, []);
 
-  async function fetchRows() {
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  // 현재 필터를 적용한 쿼리 빌더 (페이지 조회 / 전체 조회 공용)
+  function buildFilteredQuery(selectArg, opts) {
+    let query = supabase
+      .from('test_results')
+      .select(selectArg, opts)
+      .order('created_at', { ascending: false });
+    if (selectedTestId) query = query.eq('test_id', selectedTestId);
+    if (startTime) query = query.gte('created_at', new Date(startTime).toISOString());
+    if (endTime)   query = query.lte('created_at', new Date(endTime).toISOString());
+    return query;
+  }
+
+  // 특정 페이지(50개) 조회
+  async function fetchRows(targetPage) {
     if (!authChecked) return;
     setLoading(true);
     setErrMsg('');
 
-    let query = supabase
-      .from('test_results')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(500);
-
-    if (selectedTestId) query = query.eq('test_id', selectedTestId);
-    if (startTime) query = query.gte('created_at', new Date(startTime).toISOString());
-    if (endTime)   query = query.lte('created_at', new Date(endTime).toISOString());
-
-    const { data, error } = await query;
+    const from = (targetPage - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+    const { data, count, error } = await buildFilteredQuery('*', { count: 'exact' }).range(from, to);
     setLoading(false);
 
     if (error) {
       setErrMsg(`조회 실패: ${error.message}`);
       setRows([]);
+      setTotal(0);
       return;
     }
     setRows(data ?? []);
+    setTotal(count ?? 0);
+    setPage(targetPage);
   }
 
+  // 필터 변경 시 1페이지부터 다시 조회
   useEffect(() => {
-    if (authChecked) fetchRows();
+    if (authChecked) fetchRows(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authChecked, selectedTestId, startTime, endTime]);
+
+  // 엑셀 다운로드: 페이지와 무관하게 필터된 전체 기록을 청크로 모두 모아 내보냄
+  async function handleExport() {
+    if (exporting) return;
+    setExporting(true);
+    setErrMsg('');
+    try {
+      const CHUNK = 1000;
+      const all = [];
+      let from = 0;
+      for (;;) {
+        const { data, error } = await buildFilteredQuery('*', {}).range(from, from + CHUNK - 1);
+        if (error) throw error;
+        all.push(...(data ?? []));
+        if (!data || data.length < CHUNK) break;
+        from += CHUNK;
+      }
+      if (all.length === 0) return;
+      await exportResultsToExcel(all, selectedTestId);
+    } catch (e) {
+      console.error('[export]', e);
+      setErrMsg(`내보내기 실패: ${e?.message ?? e}`);
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  // 페이지 번호 윈도우 (최대 7개)
+  function pageWindow() {
+    const size = 7;
+    let start = Math.max(1, page - Math.floor(size / 2));
+    const end = Math.min(totalPages, start + size - 1);
+    start = Math.max(1, end - size + 1);
+    const arr = [];
+    for (let n = start; n <= end; n++) arr.push(n);
+    return arr;
+  }
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -177,17 +229,17 @@ export default function AdminPage() {
 
           <div className="flex items-center justify-between mt-3 pt-3 border-t" style={{ borderColor: '#F0F0F0' }}>
             <p className="text-xs" style={{ color: '#6B7280' }}>
-              {loading ? '불러오는 중...' : `총 ${rows.length}건`}
+              {loading ? '불러오는 중...' : `총 ${total}건`}
             </p>
             <div className="flex gap-2">
               <button
-                onClick={() => exportResultsToExcel(rows, selectedTestId).catch(err => console.error('[export]', err))}
-                disabled={loading || rows.length === 0}
+                onClick={handleExport}
+                disabled={loading || exporting || total === 0}
                 className="text-xs font-semibold px-3 py-1.5 rounded-lg border
                            disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ borderColor: '#1A3320', color: '#1A3320', background: '#FFFFFF' }}
               >
-                ⬇ 엑셀 다운로드
+                {exporting ? '내보내는 중...' : '⬇ 엑셀 다운로드'}
               </button>
               <button
                 onClick={() => { setSelectedTestId(''); setStartTime(''); setEndTime(''); }}
@@ -197,7 +249,7 @@ export default function AdminPage() {
                 초기화
               </button>
               <button
-                onClick={fetchRows}
+                onClick={() => fetchRows(page)}
                 className="text-xs font-semibold px-3 py-1.5 rounded-lg text-white"
                 style={{ background: 'linear-gradient(135deg, #1A3320 0%, #2A4E30 100%)' }}
               >
@@ -293,6 +345,56 @@ export default function AdminPage() {
             </div>
           )}
         </div>
+
+        {/* 페이지네이션 */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-1 mt-4">
+            <button
+              onClick={() => fetchRows(page - 1)}
+              disabled={page <= 1 || loading}
+              className="w-8 h-8 rounded-lg border text-sm
+                         disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{ borderColor: '#D8E8A0', color: '#1A3320', background: '#FFFFFF' }}
+              aria-label="이전 페이지"
+            >
+              ‹
+            </button>
+
+            {pageWindow().map((n) => (
+              <button
+                key={n}
+                onClick={() => fetchRows(n)}
+                disabled={loading}
+                aria-current={n === page ? 'page' : undefined}
+                className="min-w-8 h-8 px-2 rounded-lg border text-xs font-semibold"
+                style={
+                  n === page
+                    ? { borderColor: '#1A3320', background: '#1A3320', color: '#FFFFFF' }
+                    : { borderColor: '#D8E8A0', background: '#FFFFFF', color: '#1A3320' }
+                }
+              >
+                {n}
+              </button>
+            ))}
+
+            <button
+              onClick={() => fetchRows(page + 1)}
+              disabled={page >= totalPages || loading}
+              className="w-8 h-8 rounded-lg border text-sm
+                         disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{ borderColor: '#D8E8A0', color: '#1A3320', background: '#FFFFFF' }}
+              aria-label="다음 페이지"
+            >
+              ›
+            </button>
+          </div>
+        )}
+
+        {totalPages > 1 && (
+          <p className="text-center text-[0.7rem] mt-2" style={{ color: '#9CA3AF' }}>
+            {page} / {totalPages} 페이지 · 전체 {total}건
+          </p>
+        )}
       </main>
 
       {/* 상세 모달 */}
