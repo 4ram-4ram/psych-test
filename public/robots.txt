@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/login
+Disallow: /privacy
+
+Sitemap: https://xn--c79au3wwnf0nc.kr/sitemap.xml
